@@ -808,6 +808,21 @@ function updateAIPanelState() {
 }
 
 function applyParsedVoucherData(parsed) {
+  // Prevent hallucinated/broken short maps links from the AI
+  if (parsed.hotelMaps && parsed.hotelMaps.includes('maps.app.goo.gl')) {
+    const name = parsed.hotelName || state.hotelName || '';
+    const addr = parsed.hotelAddress || state.hotelAddress || '';
+    const query = `${name} ${addr}`.trim();
+    if (query) {
+      parsed.hotelMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+    }
+  } else if (!parsed.hotelMaps && parsed.hotelName) {
+    const name = parsed.hotelName;
+    const addr = parsed.hotelAddress || state.hotelAddress || '';
+    const query = `${name} ${addr}`.trim();
+    parsed.hotelMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  }
+
   const updatedKeys = [];
 
   Object.keys(parsed).forEach(key => {
@@ -890,7 +905,7 @@ For fields that are NOT explicitly mentioned but can be resolved via search/know
 - "hotelLocation": The city and state of the hotel in title case (e.g. "Mussoorie, Uttarakhand" or "Rishikesh, Uttarakhand").
 - "hotelAddress": The full official postal address of the hotel.
 - "hotelWebsite": The official website URL of the hotel.
-- "hotelMaps": A Google Maps link or map search URL for the hotel.
+- "hotelMaps": A standard Google Maps search URL using the search API. Do NOT guess or hallucinate a short link (e.g., maps.app.goo.gl) because they are dynamic and will fail. Instead, construct it using this format: https://www.google.com/maps/search/?api=1&query=HotelName+HotelAddress (URL-encoded).
 - "tags": Array of 3-4 custom amenity/highlight tags for this hotel (e.g. [{"icon": "⛰️", "text": "Hill Station View"}, {"icon": "⭐", "text": "Radisson Hotel"}]).
 
 Respond ONLY with a valid JSON object matching this schema. Do not write any markdown code blocks, explanation text, or notes. Just the raw JSON object.`;
