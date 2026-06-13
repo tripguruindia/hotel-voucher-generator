@@ -1,0 +1,52 @@
+{
+  "confNum": "CNF : 1610785",
+  "bookingStatus": "SECURED & CONFIRMED",
+  "hotelName": "The Oasis Mussoorie, A Member Of Radisson Individuals",
+  "hotelWebsite": "https://www.radissonhotels.com",
+  "hotelImageUrl": "",
+  "logoUrl": "TripGuru Logo WITHOUT BACKGROUND WITHOUT INDIA.png",
+  "hotelSubtitle": "A Member Of Radisson Individuals — Mussoorie, Uttarakhand",
+  "hotelLocation": "MUSSOORIE, UTTARAKHAND",
+  "hotelAddress": "Convent Rd, near Library, Chowk Mussoorie, Uttarakhand India, 248179",
+  "hotelMaps": "https://maps.google.com",
+  "guestName": "YAMINI GUPTA",
+  "guestCount": "2 Adults, 1 Child (with Extra Bed/Mattress)",
+  "checkinDate": "Jun 17, 2026",
+  "checkinTime": "From 03:00 PM onwards",
+  "checkoutDate": "Jun 20, 2026",
+  "checkoutTime": "Until 11:00 AM",
+  "roomCat": "Deluxe Room With Balcony",
+  "mealCode": "MAPAI PLAN",
+  "mealDesc": "(Includes Accommodation, Daily Buffet Breakfast & Lunch or Dinner)",
+  "agencyName": "TripGuru",
+  "agencyCorp": "Corporate Office: Sector 78, Noida",
+  "agencyBranch": "Branch Office: Baldev Plaza, Gorakhpur",
+  "agencyWeb": "www.tripguruindia.com",
+  "agencyPhone1": "+91 99714 86796",
+  "agencyPhone2": "+91 97113 19554",
+  "agencyEmail": "travel@tripguruindia.com",
+  "tags": [
+    { "icon": "⛰️", "text": "Hill Station View" },
+    { "icon": "⭐", "text": "Radisson Premium Hotel" },
+    { "icon": "🧘", "text": "Relaxing Balcony View" },
+    { "icon": "🍽️", "text": "MAPAI Breakfast & Meal" }
+  ],
+  "disclaimers": [
+    {
+      "title": "Check-in/Check-out",
+      "desc": "Early check-in or late check-out is strictly subject to room availability and hotel discretion. Additional charges may apply."
+    },
+    {
+      "title": "Identity Verification",
+      "desc": "All guests (including children) must present a valid government-approved photo ID (Passport, Aadhar Card, Driving License, or Voter ID) at check-in. PAN cards are not accepted as proof of address."
+    },
+    {
+      "title": "Extra Expenses",
+      "desc": "This voucher covers only the room stay and meal inclusions explicitly stated under the MAPAI plan. All personal extras such as room service, laundry, telephone calls, mini-bar, or spa treatments must be paid directly to the resort prior to departure."
+    },
+    {
+      "title": "Force Majeure Disclaimer",
+      "desc": "TripGuru acts solely as a booking agent and shall not be held liable or responsible for any changes, modifications, cancellations, or service deficiencies caused by unexpected weather conditions, natural disasters, road blockages, state emergencies, or sudden hotel policy amendments."
+    }
+  ]
+}

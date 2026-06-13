@@ -1,0 +1,48 @@
+{
+  "name": "hotel-voucher-generator",
+  "version": "1.0.0",
+  "description": "TripGuru Hotel Voucher Generator",
+  "main": "main.js",
+  "scripts": {
+    "dev": "npx -y serve .",
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "author": "Tanmay Agrawal, TripGuru India",
+  "license": "ISC",
+  "build": {
+    "appId": "com.tripguru.vouchergenerator",
+    "productName": "TripGuru Voucher Generator",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "TripGuru Logo WITHOUT BACKGROUND WITHOUT INDIA.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "TripGuru Voucher Generator"
+    },
+    "files": [
+      "index.html",
+      "styles.css",
+      "app.js",
+      "main.js",
+      "TripGuru Logo WITHOUT BACKGROUND WITHOUT INDIA.png"
+    ]
+  },
+  "keywords": [
+    "voucher",
+    "generator",
+    "pdf",
+    "hotel"
+  ],
+  "devDependencies": {
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3"
+  }
+}

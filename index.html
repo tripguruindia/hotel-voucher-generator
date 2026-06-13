@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Hotel Voucher Generator - TripGuru</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- LEFT: SIDEBAR EDITOR PANEL -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1><img src="TripGuru Logo WITHOUT BACKGROUND WITHOUT INDIA.png" alt="TripGuru Logo" class="sidebar-logo-img"> <span class="sidebar-logo-text">Trip<span>Guru</span></span></h1>
+        <div class="status-badge" style="background-color: var(--dash-success); color: white; border: none; font-size: 0.6rem; padding: 2px 6px;">Editor Mode</div>
+      </div>
+
+      <div class="sidebar-scroll">
+        
+        <!-- AI Smart Parser Container -->
+        <div class="ai-parser-card">
+          <div class="ai-parser-header">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> AI Smart Import</h3>
+            <span class="ai-badge" id="ai-badge">GEMINI ACTIVE</span>
+          </div>
+          <div class="ai-parser-body">
+            <textarea id="ai-prompt-input" placeholder="Paste details or focus here and press Ctrl+V to paste a screenshot...
+(e.g. Aloha on the Ganges, 14-17 june, client name - YAMINI GUPTA, MAP PLAN, CNF : Confirmed by Mr. Shubham)"></textarea>
+            
+            <!-- Multimodal Screenshot Dropzone -->
+            <div class="ai-image-dropzone" id="ai-image-dropzone">
+              <i class="fa-solid fa-camera"></i>
+              <span>Click or Drag & Drop Screenshot Here</span>
+              <input type="file" id="ai-image-file" accept="image/*" style="display: none;">
+            </div>
+            
+            <!-- Screenshot Preview Container -->
+            <div class="ai-image-preview-container" id="ai-image-preview-container" style="display: none;">
+              <img id="ai-image-preview" src="" alt="Screenshot preview">
+              <button type="button" class="btn-remove-ai-image" id="btn-remove-ai-image" title="Remove Screenshot"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="ai-actions-row">
+              <button type="button" class="btn-ai-clear" id="btn-ai-clear"><i class="fa-solid fa-trash-can"></i> Clear</button>
+              <button type="button" class="btn-ai-process" id="btn-ai-process"><i class="fa-solid fa-bolt-lightning"></i> Apply Magic Fill</button>
+            </div>
+
+            <!-- AI API Usage Stats Footer -->
+            <div class="ai-usage-footer" id="ai-usage-footer">
+              <div class="usage-title" id="btn-toggle-usage">
+                <span><i class="fa-solid fa-chart-simple"></i> Gemini API Usage</span>
+                <i class="fa-solid fa-chevron-down usage-chevron" id="usage-chevron"></i>
+              </div>
+              <div class="usage-details" id="usage-details" style="display: none;">
+                <div class="usage-stat-grid">
+                  <div class="usage-stat-box">
+                    <span class="usage-val" id="usage-calls">0</span>
+                    <span class="usage-lbl">Calls</span>
+                  </div>
+                  <div class="usage-stat-box">
+                    <span class="usage-val" id="usage-input">0</span>
+                    <span class="usage-lbl">In Tokens</span>
+                  </div>
+                  <div class="usage-stat-box">
+                    <span class="usage-val" id="usage-output">0</span>
+                    <span class="usage-lbl">Out Tokens</span>
+                  </div>
+                </div>
+                <div class="usage-reset-row">
+                  <button type="button" id="btn-reset-usage" class="btn-reset-usage"><i class="fa-solid fa-arrows-rotate"></i> Reset Stats</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form id="voucher-form" onsubmit="event.preventDefault();">
+          
+          <!-- Section 1: Hotel Cover Image -->
+          <div class="form-section active">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-image"></i> Hotel Cover Image</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="form-group">
+                <label>Upload Cover Photo</label>
+                <!-- Styled Drag & Drop Zone -->
+                <div class="hotel-image-dropzone" id="hotel-image-dropzone">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <span>Click or Drag & Drop Image Here</span>
+                  <input type="file" id="input-hotel-image-upload" accept="image/*" style="display: none;">
+                </div>
+                
+                <!-- Mini Thumbnail Preview inside editor -->
+                <div class="hotel-image-preview-wrapper" id="hotel-image-preview-wrapper" style="display: none;">
+                  <img id="hotel-image-preview-thumb" src="" alt="Cover thumbnail">
+                  <button type="button" class="btn-remove-hotel-image" id="btn-remove-hotel-image" title="Remove Cover Photo">
+                    <i class="fa-solid fa-trash-can"></i> Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Reference & Status -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-file-invoice"></i> Booking Ref & Status</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="form-group">
+                <label for="input-conf-num">Confirmation Number / Details</label>
+                <input type="text" id="input-conf-num" value="Confirmed by Mr. Shubham">
+              </div>
+              <div class="form-group">
+                <label for="input-booking-status">Booking Status Text</label>
+                <input type="text" id="input-booking-status" value="SECURED & CONFIRMED">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Hotel Details -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-hotel"></i> Hotel Information</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="form-group">
+                <label for="input-hotel-name">Resort / Hotel Name</label>
+                <input type="text" id="input-hotel-name" value="Aloha on the Ganges">
+              </div>
+              <div class="form-group">
+                <label for="input-hotel-website">Hotel Website URL</label>
+                <input type="url" id="input-hotel-website" value="https://www.alohaontheganges.com">
+              </div>
+              <div class="form-group">
+                <label for="input-hotel-subtitle">Subtitle / Category Description</label>
+                <input type="text" id="input-hotel-subtitle" value="Premium Riverside Resort — Rishikesh, Uttarakhand">
+              </div>
+              <div class="form-group">
+                <label for="input-hotel-location">Property Location</label>
+                <input type="text" id="input-hotel-location" value="Rishikesh, Uttarakhand">
+              </div>
+              <div class="form-group">
+                <label for="input-hotel-address">Official Address</label>
+                <textarea id="input-hotel-address">NH 58, Tapovan, Rishikesh, Uttarakhand 249192</textarea>
+              </div>
+              <div class="form-group">
+                <label for="input-hotel-maps">Google Maps URL</label>
+                <input type="url" id="input-hotel-maps" value="https://maps.google.com">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Guest & Passengers -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-users"></i> Guest & Passengers</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="form-group">
+                <label for="input-guest-name">Primary Guest Name</label>
+                <input type="text" id="input-guest-name" value="Yamini Gupta">
+              </div>
+              <div class="form-group">
+                <label for="input-guest-count">Passenger Count / Description</label>
+                <input type="text" id="input-guest-count" value="2 Adults, 2 Children (Ages 8 & 4 Years Old)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Stay Timeline -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-calendar-days"></i> Stay Timeline & Category</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="input-checkin-date">Check-In Date</label>
+                  <input type="date" id="input-checkin-date" value="2026-06-14">
+                </div>
+                <div class="form-group">
+                  <label for="input-checkin-time">Check-In Time Info</label>
+                  <input type="time" id="input-checkin-time" value="15:00">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="input-checkout-date">Check-Out Date</label>
+                  <input type="date" id="input-checkout-date" value="2026-06-17">
+                </div>
+                <div class="form-group">
+                  <label for="input-checkout-time">Check-Out Time Info</label>
+                  <input type="time" id="input-checkout-time" value="11:00">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="input-room-cat">Room Category</label>
+                <input type="text" id="input-room-cat" value="Deluxe Royal Kids Suite">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Meal Plan -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-utensils"></i> Meal Plan</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="form-group">
+                <label for="input-meal-code">Meal Plan Name / Code</label>
+                <input type="text" id="input-meal-code" value="MAP PLAN">
+              </div>
+              <div class="form-group">
+                <label for="input-meal-desc">Meal Inclusions Description</label>
+                <textarea id="input-meal-desc">(Includes Accommodation, Daily Buffet Breakfast & Dinner)</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 6: Hotel Tags / Highlights -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-tags"></i> Hotel Highlight Tags</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="tags-manager">
+                <label>Add Custom Tag</label>
+                <div class="input-with-btn">
+                  <select id="select-tag-icon">
+                    <option value="🌊">🌊 Water / Ganges View</option>
+                    <option value="⭐">⭐ Star Rating</option>
+                    <option value="🧘">🧘 Spa / Wellness</option>
+                    <option value="🍽️">🍽️ Dining</option>
+                    <option value="🏊">🏊 Pool / Leisure</option>
+                    <option value="📶">📶 WiFi / Business</option>
+                    <option value="⛰️">⛰️ Mountain View</option>
+                    <option value="🏷️">🏷️ Generic Label</option>
+                  </select>
+                  <input type="text" id="input-tag-text" placeholder="Ganges View Property">
+                  <button type="button" class="btn-small" id="btn-add-tag"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <div class="tag-list" id="editor-tag-list">
+                  <!-- Tag pills injected dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 7: Terms & Disclaimers -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-triangle-exclamation"></i> Terms & Disclaimers</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="list-manager">
+                <label>Add Disclaimer Clause</label>
+                <div class="form-group">
+                  <input type="text" id="input-disclaimer-title" placeholder="Clause Title (e.g. Identity Verification)">
+                  <div class="input-with-btn">
+                    <textarea id="input-disclaimer-desc" placeholder="Clause description text..."></textarea>
+                    <button type="button" class="btn-small" id="btn-add-disclaimer" style="align-self: flex-end; height: 40px;"><i class="fa-solid fa-plus"></i></button>
+                  </div>
+                </div>
+                <div class="item-list" id="editor-disclaimer-list" style="display: flex; flex-direction: column; gap: 8px;">
+                  <!-- Disclaimer item pills injected dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 8: Support & Helpline -->
+          <div class="form-section">
+            <button type="button" class="section-toggle">
+              <span><i class="fa-solid fa-headset"></i> Support & Helpline</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="section-content">
+              <div class="form-group">
+                <label for="input-agency-name">Authorized Agency</label>
+                <input type="text" id="input-agency-name" value="TripGuru">
+              </div>
+              <div class="form-group">
+                <label for="input-agency-corp">Corporate Office</label>
+                <input type="text" id="input-agency-corp" value="Sector 78, Noida">
+              </div>
+              <div class="form-group">
+                <label for="input-agency-branch">Branch Office</label>
+                <input type="text" id="input-agency-branch" value="Baldev Plaza, Gorakhpur">
+              </div>
+              <div class="form-group">
+                <label for="input-agency-web">Agency Website</label>
+                <input type="text" id="input-agency-web" value="www.tripguruindia.com">
+              </div>
+              <div class="form-group">
+                <label for="input-agency-phone1">Helpline Phone 1</label>
+                <input type="text" id="input-agency-phone1" value="+91 99714 86796">
+              </div>
+              <div class="form-group">
+                <label for="input-agency-phone2">Helpline Phone 2</label>
+                <input type="text" id="input-agency-phone2" value="+91 97113 19554">
+              </div>
+              <div class="form-group">
+                <label for="input-agency-email">Helpline Email</label>
+                <input type="email" id="input-agency-email" value="travel@tripguruindia.com">
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Sidebar Footer Action Panel -->
+      <div class="sidebar-footer">
+        <button type="button" class="btn-primary" id="btn-export-pdf">
+          <i class="fa-solid fa-file-pdf"></i> Export & Print PDF
+        </button>
+        <div class="form-row">
+          <button type="button" class="btn-secondary" id="btn-save-tpl">
+            <i class="fa-solid fa-floppy-disk"></i> Save Template
+          </button>
+          <button type="button" class="btn-secondary" id="btn-load-tpl-trigger">
+            <i class="fa-solid fa-file-import"></i> Load Template
+          </button>
+        </div>
+        <input type="file" id="input-load-tpl" style="display: none;" accept=".json">
+      </div>
+    </aside>
+
+    <!-- RIGHT: VOUCHER LIVE PREVIEW AREA -->
+    <main class="preview-container">
+      
+      <div class="preview-header-bar">
+        <span><i class="fa-solid fa-circle-dot" style="color: var(--pdf-green); font-size: 0.7rem;"></i> Real-time Document Preview</span>
+        <span>A4 Layout &nbsp;|&nbsp; Press "Ctrl + P" or click Export to Save PDF</span>
+      </div>
+
+      <!-- ================= PAGE 1 ================= -->
+      <div class="page-wrapper">
+        <div class="voucher-page page-1" id="voucher-page-1">
+          
+          <!-- Voucher Header (Yellow Banner) -->
+          <header class="voucher-header">
+            <div class="logo-container">
+              <img id="preview-logo" class="logo-img" src="TripGuru Logo WITHOUT BACKGROUND WITHOUT INDIA.png" alt="TripGuru Logo">
+            </div>
+            <div class="header-title-area">
+              <h2>BOOKING<br>CONFIRMATION</h2>
+            </div>
+          </header>
+
+          <!-- Reference Row -->
+          <div class="ref-row">
+            <div class="ref-item">
+              <span class="ref-label">Confirmation Number</span>
+              <span class="ref-value" id="preview-conf-num">Confirmed by Mr. Shubham</span>
+            </div>
+            <div class="ref-item right">
+              <span class="ref-label">Booking Status</span>
+              <span class="booking-status-pill" id="preview-booking-status">SECURED & CONFIRMED</span>
+            </div>
+          </div>
+
+          <!-- Hotel Banner (Dark Blue Block) -->
+          <div class="hotel-banner">
+            <h3 class="hotel-name"><a href="https://www.alohaontheganges.com" id="preview-hotel-name" target="_blank" style="color: inherit; text-decoration: inherit;">Aloha on the Ganges</a></h3>
+            <p class="hotel-subtitle" id="preview-hotel-subtitle">Premium Riverside Resort — Rishikesh, Uttarakhand</p>
+            <div class="hotel-tags" id="preview-hotel-tags">
+              <!-- Tags injected dynamically -->
+            </div>
+          </div>
+
+          <!-- Section: Passenger & Guest Info -->
+          <section class="info-section">
+            <div class="section-bar">
+              <h4 class="section-title">PASSENGER & GUEST INFORMATION</h4>
+            </div>
+            <div class="details-grid">
+              <div class="details-row">
+                <span class="details-label">Primary Guest Name</span>
+                <span class="details-value bold blue" id="preview-guest-name">Yamini Gupta</span>
+              </div>
+              <div class="details-row">
+                <span class="details-label">Passenger Count</span>
+                <span class="details-value" id="preview-guest-count">2 Adults, 2 Children (Ages 8 & 4 Years Old)</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Hotel Cover Image on Page 1 -->
+          <div class="hotel-image-container">
+            <div id="preview-hotel-image-placeholder" class="hotel-image-placeholder">
+              <i class="fa-regular fa-image" style="font-size: 2.2rem; color: var(--pdf-text-muted); margin-bottom: 8px;"></i>
+              <span style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--pdf-text-muted); text-transform: uppercase; letter-spacing: 0.5px;">No Hotel Image Uploaded</span>
+              <span style="font-size: 0.72rem; color: var(--pdf-text-muted); margin-top: 2px;">Select a cover photo in the sidebar editor</span>
+            </div>
+            <img id="preview-hotel-image" class="hotel-image" src="" alt="Hotel Cover Photo" style="display: none;">
+          </div>
+
+          <!-- Page 1 Footer -->
+          <footer class="pdf-footer">
+            <span>Generated by TripGuru India</span>
+            <span class="pdf-footer-right">Page 1 of 2</span>
+          </footer>
+
+        </div>
+      </div>
+
+      <!-- ================= PAGE 2 ================= -->
+      <div class="page-wrapper">
+        <div class="voucher-page page-2" id="voucher-page-2">
+          
+          <!-- Section: Accommodation details -->
+          <section class="info-section" style="margin-top: 10px;">
+            <div class="section-bar">
+              <h4 class="section-title">ACCOMMODATION & STAY DETAILS</h4>
+            </div>
+            <div class="details-grid">
+              <div class="details-row">
+                <span class="details-label">Resort / Hotel Name</span>
+                <a href="https://www.alohaontheganges.com" target="_blank" class="details-value blue-link" id="preview-hotel-name-detail">Aloha on the Ganges</a>
+              </div>
+              <div class="details-row">
+                <span class="details-label">Property Location</span>
+                <span class="details-value" id="preview-hotel-location">Rishikesh, Uttarakhand</span>
+              </div>
+              <div class="details-row">
+                <span class="details-label">Official Address</span>
+                <span class="details-value" id="preview-hotel-address">NH 58, Tapovan, Rishikesh, Uttarakhand 249192</span>
+              </div>
+              <div class="details-row">
+                <span class="details-label">Google Maps Link</span>
+                <a href="https://maps.app.goo.gl/wRBD57Yn2f7Qj92M7" target="_blank" class="details-value blue-link" id="preview-hotel-maps">📍 Click Here to View Location Map</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section: Stay Timeline & Meal Plan (Reservation Timeline & Inclusions) -->
+          <section class="info-section">
+            <div class="section-bar">
+              <h4 class="section-title">RESERVATION TIMELINE & INCLUSIONS</h4>
+            </div>
+            <div class="details-grid">
+              <div class="details-row">
+                <span class="details-label">Check-In Date</span>
+                <span class="details-value"><span class="bold" id="preview-checkin-date">Jun 14, 2026</span><span class="subtext" id="preview-checkin-time">(From 03:00 PM onwards)</span></span>
+              </div>
+              <div class="details-row">
+                <span class="details-label">Check-Out Date</span>
+                <span class="details-value"><span class="bold" id="preview-checkout-date">Jun 17, 2026</span><span class="subtext" id="preview-checkout-time">(Until 11:00 AM)</span></span>
+              </div>
+              <div class="details-row">
+                <span class="details-label">Room Category</span>
+                <span class="details-value bold blue" id="preview-room-cat">Deluxe Royal Kids Suite</span>
+              </div>
+              <div class="details-row" style="border-bottom: none; padding-bottom: 0;">
+                <span class="details-label">Assigned Meal Plan</span>
+                <span class="details-value"><strong class="green" id="preview-meal-code">MAP PLAN</strong><span class="meal-plan-desc" id="preview-meal-desc">(Includes Accommodation, Daily Buffet Breakfast & Dinner)</span></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Terms and Disclaimers Section -->
+          <section class="info-section">
+            <div class="terms-box">
+              <h4 class="terms-header">STANDARD TERMS, CONDITIONS & DISCLAIMERS</h4>
+              <ul class="terms-list" id="preview-disclaimers">
+                <!-- Disclaimers injected dynamically -->
+              </ul>
+            </div>
+          </section>
+
+          <!-- Authorized Agency and helpline section -->
+          <section class="info-section" style="margin-bottom: 0;">
+            <div class="agency-footer-block">
+              <!-- Left: Partner details -->
+              <div class="agency-col">
+                <h5 class="agency-title">AUTHORIZED AGENCY PARTNER</h5>
+                <span class="agency-partner-name" id="preview-agency-name">TripGuru</span>
+                <span class="agency-text" id="preview-agency-corp">Corporate Office: Sector 78, Noida</span>
+                <span class="agency-text" id="preview-agency-branch">Branch Office: Baldev Plaza, Gorakhpur</span>
+                <span class="agency-text">Web: <a href="#" id="preview-agency-web" target="_blank">www.tripguruindia.com</a></span>
+              </div>
+              <!-- Right: Support details -->
+              <div class="agency-col">
+                <h5 class="agency-title">24/7 HELPLINE & SUPPORT</h5>
+                <span class="agency-text">Phone lines:</span>
+                <span class="helpline-phone" id="preview-agency-phone1">+91 99714 86796</span>
+                <span class="helpline-phone" id="preview-agency-phone2">+91 97113 19554</span>
+                <span class="agency-text" style="margin-top: 4px;">Email: <strong id="preview-agency-email">travel@tripguruindia.com</strong></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Page 2 Footer -->
+          <footer class="pdf-footer">
+            <span>Generated by TripGuru India</span>
+            <span class="pdf-footer-right">Page 2 of 2</span>
+          </footer>
+
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
