@@ -789,6 +789,59 @@ function setupAIParser() {
     btnResetUsage.addEventListener('click', resetAPIUsage);
   }
 
+  // API Key Settings Panel Toggling and Saving
+  const btnApiSettings = document.getElementById('btn-api-settings');
+  const apiSettingsPanel = document.getElementById('ai-api-settings-panel');
+  const inputGeminiKey = document.getElementById('input-gemini-key');
+  const btnSaveKey = document.getElementById('btn-save-key');
+  const keyStatusLabel = document.getElementById('key-status-label');
+
+  if (btnApiSettings && apiSettingsPanel) {
+    // Toggle settings panel visibility
+    btnApiSettings.addEventListener('click', () => {
+      const isHidden = apiSettingsPanel.style.display === 'none';
+      apiSettingsPanel.style.display = isHidden ? 'block' : 'none';
+    });
+
+    // Populate initial key state on load
+    const savedKey = localStorage.getItem('tg_gemini_key') || '';
+    if (savedKey) {
+      inputGeminiKey.value = savedKey;
+      if (keyStatusLabel) {
+        keyStatusLabel.textContent = 'Custom Key Saved';
+        keyStatusLabel.style.color = '#10b981'; // green
+      }
+    } else {
+      if (keyStatusLabel) {
+        keyStatusLabel.textContent = 'Using Default Key';
+        keyStatusLabel.style.color = '#a855f7'; // purple
+      }
+    }
+
+    // Save key button action
+    if (btnSaveKey && inputGeminiKey) {
+      btnSaveKey.addEventListener('click', () => {
+        const val = inputGeminiKey.value.trim();
+        if (val) {
+          localStorage.setItem('tg_gemini_key', val);
+          if (keyStatusLabel) {
+            keyStatusLabel.textContent = 'Custom Key Saved';
+            keyStatusLabel.style.color = '#10b981';
+          }
+          alert('Custom Gemini API Key saved successfully!');
+        } else {
+          localStorage.removeItem('tg_gemini_key');
+          if (keyStatusLabel) {
+            keyStatusLabel.textContent = 'Using Default Key';
+            keyStatusLabel.style.color = '#a855f7';
+          }
+          alert('Custom key cleared. Falling back to default system key.');
+        }
+        updateAIPanelState();
+      });
+    }
+  }
+
   // Load saved API usage stats
   loadAPIUsage();
 }

@@ -297,6 +297,14 @@ textarea {
   margin-bottom: 12px;
 }
 
+.btn-api-settings:hover {
+  color: #c084fc !important;
+  transform: rotate(45deg);
+}
+.btn-api-settings {
+  transition: all 0.3s ease !important;
+}
+
 .ai-parser-header h3 {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.9rem;
