@@ -70,6 +70,7 @@ let state = {
   checkoutDate: "Jun 17, 2026",
   checkoutTime: "Until 11:00 AM",
   roomCat: "Deluxe Royal Kids Suite",
+  roomCount: "1 Room",
   mealCode: "MAP PLAN",
   mealDesc: "(Includes Accommodation, Daily Buffet Breakfast & Dinner)",
   agencyName: "TripGuru",
@@ -126,6 +127,7 @@ const inputs = {
   checkoutDate: document.getElementById('input-checkout-date'),
   checkoutTime: document.getElementById('input-checkout-time'),
   roomCat: document.getElementById('input-room-cat'),
+  roomCount: document.getElementById('input-room-count'),
   mealCode: document.getElementById('input-meal-code'),
   mealDesc: document.getElementById('input-meal-desc'),
   agencyName: document.getElementById('input-agency-name'),
@@ -154,6 +156,7 @@ const previews = {
   checkoutDate: document.getElementById('preview-checkout-date'),
   checkoutTime: document.getElementById('preview-checkout-time'),
   roomCat: document.getElementById('preview-room-cat'),
+  roomCount: document.getElementById('preview-room-count'),
   mealCode: document.getElementById('preview-meal-code'),
   mealDesc: document.getElementById('preview-meal-desc'),
   agencyName: document.getElementById('preview-agency-name'),
@@ -913,7 +916,7 @@ function applyParsedVoucherData(parsed) {
       { idx: 0, keys: ['confNum', 'bookingStatus'] },
       { idx: 1, keys: ['hotelName', 'hotelWebsite', 'hotelSubtitle', 'hotelLocation', 'hotelAddress', 'hotelMaps'] },
       { idx: 2, keys: ['guestName', 'guestCount'] },
-      { idx: 3, keys: ['checkinDate', 'checkinTime', 'checkoutDate', 'checkoutTime', 'roomCat'] },
+      { idx: 3, keys: ['checkinDate', 'checkinTime', 'checkoutDate', 'checkoutTime', 'roomCat', 'roomCount'] },
       { idx: 4, keys: ['mealCode', 'mealDesc'] }
     ];
 
@@ -949,6 +952,7 @@ Extract these fields directly from the image/text:
 - "checkoutDate": Check-out date in "Mmm DD, YYYY" format (e.g. "Jun 17, 2026").
 - "guestCount": Standard passenger description (e.g. "2 Adults, 2 Children (Ages 8 & 4 Years Old)").
 - "roomCat": Room category in title case.
+- "roomCount": Number of rooms, formatted like "1 Room" or "2 Rooms", etc. (e.g., "1 Room" or "2 Rooms").
 - "mealCode": Standard meal code (e.g. "MAP PLAN", "AP PLAN", "CP PLAN", "EP PLAN", "MAPAI PLAN").
 - "mealDesc": Description of inclusions for that meal plan code (e.g. "(Includes Accommodation, Daily Buffet Breakfast & Dinner)").
 
@@ -1198,6 +1202,34 @@ function runAIParser(text) {
         .replace(/\bstd\b/gi, 'Standard');
       
       result.roomCat = cleaned.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+      matchedLines.add(i);
+      break;
+    }
+  }
+
+  // 6b. Room Count
+  for (let i = 0; i < lines.length; i++) {
+    if (matchedLines.has(i)) continue;
+    const line = lines[i];
+    const match = line.match(/(?:no\s*of\s*rooms|rooms|room\s*count|number\s*of\s*rooms)\s*[-:]\s*(.+)/i);
+    if (match) {
+      let val = match[1].trim();
+      if (!val.toLowerCase().includes('room')) {
+        val = `${val} Room${val !== '1' ? 's' : ''}`;
+      }
+      result.roomCount = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+      matchedLines.add(i);
+      break;
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    if (matchedLines.has(i)) continue;
+    const line = lines[i];
+    const match = line.match(/^(\d+)\s*rooms?$/i);
+    if (match) {
+      const num = match[1];
+      result.roomCount = `${num} Room${num !== '1' ? 's' : ''}`;
       matchedLines.add(i);
       break;
     }
